@@ -1,0 +1,18 @@
+{
+  "name": "prisoners-dilemma",
+  "version": "1.0.0",
+  "description": "Online multiplayer Prisoner's Dilemma game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.6.2",
+    "express": "^4.18.2",
+    "express-session": "^1.19.0",
+    "socket.io": "^4.7.4",
+    "uuid": "^13.0.0"
+  }
+}

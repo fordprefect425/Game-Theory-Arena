@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Theory Arena</title>
+  <meta name="description"
+    content="Play classic game theory games against real opponents online. Cooperate or defect — the choice is yours." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+
+  <!-- ═══════════════════════ NAV BAR ════════════════════════════ -->
+  <nav class="navbar" id="navbar" style="display:none">
+    <a href="#" class="nav-brand">⚖️ <span>Game Theory Arena</span></a>
+    <div class="nav-links">
+      <button class="nav-btn" data-screen="home" id="nav-home">Home</button>
+      <button class="nav-btn" data-screen="leaderboard" id="nav-leaderboard">🏆 Leaderboard</button>
+      <button class="nav-btn" data-screen="friends" id="nav-friends">👥 Friends</button>
+      <button class="nav-btn" data-screen="profile" id="nav-profile">👤 Profile</button>
+      <button class="nav-btn nav-logout" id="nav-logout">Logout</button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════ AUTH SCREEN ════════════════════════ -->
+  <section id="screen-auth" class="screen active">
+    <div class="brand">
+      <div class="brand-icon">⚖️</div>
+      <h1>Game Theory Arena</h1>
+      <p class="subtitle">Outsmart. Outplay. Outthink.</p>
+    </div>
+
+    <div class="glass-card auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Login</button>
+        <button class="auth-tab" data-tab="register">Register</button>
+      </div>
+
+      <form id="form-login" class="auth-form">
+        <div class="input-group">
+          <label for="login-username">Username</label>
+          <input type="text" id="login-username" placeholder="Your username…" maxlength="20" autocomplete="username" />
+        </div>
+        <div class="input-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="Your password…" autocomplete="current-password" />
+        </div>
+        <p class="auth-error" id="login-error"></p>
+        <button type="submit" class="btn btn-primary auth-submit">Login →</button>
+      </form>
+
+      <form id="form-register" class="auth-form" style="display:none">
+        <div class="input-group">
+          <label for="reg-username">Choose Username</label>
+          <input type="text" id="reg-username" placeholder="2-20 characters…" maxlength="20" autocomplete="username" />
+        </div>
+        <div class="input-group">
+          <label for="reg-password">Choose Password</label>
+          <input type="password" id="reg-password" placeholder="At least 4 characters…" autocomplete="new-password" />
+        </div>
+        <p class="auth-error" id="reg-error"></p>
+        <button type="submit" class="btn btn-primary auth-submit">Create Account →</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ HOME SCREEN ════════════════════════ -->
+  <section id="screen-home" class="screen">
+    <div class="glass-card home-card">
+      <h2 class="home-greeting" id="home-greeting">Welcome back!</h2>
+      <p class="home-subtitle">Choose your game mode</p>
+
+      <div class="home-stats" id="home-stats">
+        <div class="stat-badge">
+          <span class="stat-num" id="home-wins">0</span>
+          <span class="stat-label">Wins</span>
+        </div>
+        <div class="stat-badge">
+          <span class="stat-num" id="home-losses">0</span>
+          <span class="stat-label">Losses</span>
+        </div>
+        <div class="stat-badge">
+          <span class="stat-num" id="home-draws">0</span>
+          <span class="stat-label">Draws</span>
+        </div>
+      </div>
+
+      <button id="btn-find" class="btn btn-primary btn-play">
+        <span class="btn-text">⚔️ Find Opponent</span>
+      </button>
+
+      <div class="payoff-preview">
+        <h3>Prisoner's Dilemma — Payoff Matrix</h3>
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>They Cooperate</th>
+              <th>They Defect</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>You Cooperate</th>
+              <td class="cell-cc">+3 / +3</td>
+              <td class="cell-cd">+0 / +5</td>
+            </tr>
+            <tr>
+              <th>You Defect</th>
+              <td class="cell-dc">+5 / +0</td>
+              <td class="cell-dd">+1 / +1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ PROFILE SCREEN ═════════════════════ -->
+  <section id="screen-profile" class="screen">
+    <div class="glass-card profile-card">
+      <div class="profile-header">
+        <div class="profile-avatar" id="profile-avatar">?</div>
+        <h2 id="profile-username">Username</h2>
+        <p class="profile-since" id="profile-since">Member since …</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="profile-games">0</span>
+          <span class="stat-name">Games Played</span>
+        </div>
+        <div class="stat-card stat-win">
+          <span class="stat-value" id="profile-wins">0</span>
+          <span class="stat-name">Wins</span>
+        </div>
+        <div class="stat-card stat-loss">
+          <span class="stat-value" id="profile-losses">0</span>
+          <span class="stat-name">Losses</span>
+        </div>
+        <div class="stat-card stat-draw">
+          <span class="stat-value" id="profile-draws">0</span>
+          <span class="stat-name">Draws</span>
+        </div>
+        <div class="stat-card stat-score">
+          <span class="stat-value" id="profile-score">0</span>
+          <span class="stat-name">Total Score</span>
+        </div>
+        <div class="stat-card stat-rate">
+          <span class="stat-value" id="profile-winrate">0%</span>
+          <span class="stat-name">Win Rate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ LEADERBOARD SCREEN ═════════════════ -->
+  <section id="screen-leaderboard" class="screen">
+    <div class="glass-card leaderboard-card">
+      <h2>🏆 Friends Leaderboard</h2>
+      <p class="lb-hint" id="lb-hint">Add friends to see them on the board!</p>
+      <table class="lb-table" id="lb-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Wins</th>
+            <th>Losses</th>
+            <th>Draws</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="lb-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ FRIENDS SCREEN ═════════════════════ -->
+  <section id="screen-friends" class="screen">
+    <div class="glass-card friends-card">
+      <h2>👥 Friends</h2>
+
+      <div class="friend-add-section">
+        <div class="input-group input-inline">
+          <input type="text" id="friend-username" placeholder="Enter username…" maxlength="20" autocomplete="off" />
+          <button class="btn btn-primary btn-add-friend" id="btn-add-friend">Add</button>
+        </div>
+        <p class="friend-msg" id="friend-msg"></p>
+      </div>
+
+      <div class="friend-requests" id="friend-requests-section" style="display:none">
+        <h3>Pending Requests</h3>
+        <div id="friend-requests-list"></div>
+      </div>
+
+      <div class="friend-list-section">
+        <h3>Your Friends</h3>
+        <div id="friend-list" class="friend-list">
+          <p class="empty-hint" id="friends-empty">No friends yet. Add someone by username!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ SEARCHING SCREEN ═══════════════════ -->
+  <section id="screen-searching" class="screen">
+    <div class="glass-card searching-card">
+      <div class="spinner"></div>
+      <h2>Searching for Opponent…</h2>
+      <p class="hint">Waiting for another player to join</p>
+      <button id="btn-cancel" class="btn btn-ghost">Cancel</button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ GAME SCREEN ════════════════════════ -->
+  <section id="screen-game" class="screen">
+    <div class="game-hud">
+      <div class="score-panel you">
+        <span class="label" id="you-label">You</span>
+        <span class="score" id="you-score">0</span>
+      </div>
+      <div class="round-indicator">
+        <span class="round-label">Round</span>
+        <span class="round-num" id="round-num">1</span>
+        <span class="round-of">/ <span id="round-total">5</span></span>
+      </div>
+      <div class="score-panel opponent">
+        <span class="label" id="opp-label">Opponent</span>
+        <span class="score" id="opp-score">0</span>
+      </div>
+    </div>
+
+    <div class="glass-card game-card">
+      <h2 class="prompt" id="game-prompt">What will you do?</h2>
+
+      <div class="choice-buttons" id="choice-buttons">
+        <button class="btn-choice btn-cooperate" data-choice="cooperate">
+          <span class="choice-icon">🤝</span>
+          <span class="choice-label">Cooperate</span>
+        </button>
+        <button class="btn-choice btn-defect" data-choice="defect">
+          <span class="choice-icon">🗡️</span>
+          <span class="choice-label">Defect</span>
+        </button>
+      </div>
+
+      <div class="waiting-overlay" id="waiting-overlay">
+        <div class="pulse-ring"></div>
+        <p>Waiting for opponent…</p>
+      </div>
+
+      <div class="round-reveal" id="round-reveal">
+        <div class="reveal-cards">
+          <div class="reveal-card you-card">
+            <span class="reveal-who">You</span>
+            <span class="reveal-choice" id="reveal-you"></span>
+            <span class="reveal-payoff" id="reveal-you-pts"></span>
+          </div>
+          <div class="reveal-vs">VS</div>
+          <div class="reveal-card opp-card">
+            <span class="reveal-who" id="reveal-opp-name">Opponent</span>
+            <span class="reveal-choice" id="reveal-opp"></span>
+            <span class="reveal-payoff" id="reveal-opp-pts"></span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-next" id="btn-next">Next Round →</button>
+      </div>
+    </div>
+
+    <div class="history-bar" id="history-bar"></div>
+  </section>
+
+  <!-- ═══════════════════════ RESULTS SCREEN ═════════════════════ -->
+  <section id="screen-results" class="screen">
+    <div class="glass-card results-card">
+      <div class="result-banner" id="result-banner">
+        <span class="result-emoji" id="result-emoji">🏆</span>
+        <h2 id="result-text">You Win!</h2>
+      </div>
+
+      <div class="final-scores">
+        <div class="final-score you">
+          <span class="label" id="final-you-label">You</span>
+          <span class="score" id="final-you-score">0</span>
+        </div>
+        <div class="final-score-divider">—</div>
+        <div class="final-score opponent">
+          <span class="label" id="final-opp-label">Opponent</span>
+          <span class="score" id="final-opp-score">0</span>
+        </div>
+      </div>
+
+      <div class="history-table-wrap">
+        <h3>Round History</h3>
+        <table class="history-table" id="history-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>You</th>
+              <th>Them</th>
+              <th>You +</th>
+              <th>Them +</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn-primary" id="btn-rematch">
+          <span class="btn-text">Rematch</span>
+          <span class="btn-icon">🔄</span>
+        </button>
+        <button class="btn btn-ghost" id="btn-back-home">Back to Home</button>
+      </div>
+
+      <p class="rematch-status" id="rematch-status"></p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ DISCONNECT OVERLAY ═════════════════ -->
+  <div class="overlay" id="overlay-disconnect">
+    <div class="glass-card disconnect-card">
+      <span class="disconnect-icon">💔</span>
+      <h2>Opponent Disconnected</h2>
+      <p>Your opponent left the game.</p>
+      <button class="btn btn-primary" id="btn-back-lobby">Back to Home</button>
+    </div>
+  </div>
+
+  <!-- Background ambient shapes -->
+  <div class="bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+
+</html>
