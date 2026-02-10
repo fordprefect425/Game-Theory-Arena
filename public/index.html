@@ -164,8 +164,14 @@
   <!-- ═══════════════════════ LEADERBOARD SCREEN ═════════════════ -->
   <section id="screen-leaderboard" class="screen">
     <div class="glass-card leaderboard-card">
-      <h2>🏆 Friends Leaderboard</h2>
-      <p class="lb-hint" id="lb-hint">Add friends to see them on the board!</p>
+      <h2>🏆 Leaderboard</h2>
+
+      <div class="lb-tabs">
+        <button class="lb-tab active" data-lb="global">🌍 Global</button>
+        <button class="lb-tab" data-lb="friends">👥 Friends</button>
+      </div>
+
+      <p class="lb-hint" id="lb-hint" style="display:none">Add friends to see them on the board!</p>
       <table class="lb-table" id="lb-table">
         <thead>
           <tr>

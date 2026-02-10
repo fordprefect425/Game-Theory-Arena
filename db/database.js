@@ -131,6 +131,19 @@ function getLeaderboard(userId) {
     return rows.map((row, i) => ({ rank: i + 1, ...row }));
 }
 
+function getGlobalLeaderboard() {
+    const allUsers = db.prepare('SELECT id, username FROM users').all();
+
+    const rows = allUsers.map((u) => {
+        const stats = getPlayerStats(u.id);
+        return { id: u.id, username: u.username, ...stats };
+    });
+
+    rows.sort((a, b) => b.wins - a.wins || b.total_score - a.total_score);
+
+    return rows.map((row, i) => ({ rank: i + 1, ...row }));
+}
+
 module.exports = {
     createUser,
     findUserByUsername,
@@ -143,4 +156,5 @@ module.exports = {
     getFriends,
     checkFriendship,
     getLeaderboard,
+    getGlobalLeaderboard,
 };

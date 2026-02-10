@@ -279,14 +279,31 @@
     // LEADERBOARD
     // ══════════════════════════════════════════════════════════════════
 
+    let currentLbTab = 'global';
+
+    // Tab switching
+    document.querySelectorAll('.lb-tab').forEach((tab) => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.lb-tab').forEach((t) => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentLbTab = tab.dataset.lb;
+            renderLeaderboard();
+        });
+    });
+
     async function loadLeaderboard() {
         showScreen('leaderboard');
+        renderLeaderboard();
+    }
+
+    async function renderLeaderboard() {
         try {
-            const res = await fetch('/api/leaderboard');
+            const endpoint = currentLbTab === 'global' ? '/api/leaderboard/global' : '/api/leaderboard';
+            const res = await fetch(endpoint);
             const rows = await res.json();
             dom.lbTbody.innerHTML = '';
 
-            if (rows.length <= 1) {
+            if (currentLbTab === 'friends' && rows.length <= 1) {
                 dom.lbHint.style.display = 'block';
             } else {
                 dom.lbHint.style.display = 'none';

@@ -569,6 +569,37 @@ body.has-nav .screen {
   margin-bottom: 4px;
 }
 
+.lb-tabs {
+  display: flex;
+  margin: 16px 0 20px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.lb-tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.lb-tab.active {
+  background: rgba(129, 140, 248, 0.15);
+  color: var(--accent-bright);
+}
+
+.lb-tab:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.04);
+}
+
 .lb-hint {
   text-align: center;
   color: var(--text-muted);

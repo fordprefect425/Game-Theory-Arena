@@ -156,6 +156,11 @@ app.get('/api/leaderboard', requireAuth, (req, res) => {
     res.json(lb);
 });
 
+app.get('/api/leaderboard/global', requireAuth, (req, res) => {
+    const lb = db.getGlobalLeaderboard();
+    res.json(lb);
+});
+
 // ═══════════════════════════════════════════════════════════════════════
 // SOCKET.IO — GAME
 // ═══════════════════════════════════════════════════════════════════════
