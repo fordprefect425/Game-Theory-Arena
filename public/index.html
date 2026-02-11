@@ -52,6 +52,12 @@
           <label for="login-password">Password</label>
           <input type="password" id="login-password" placeholder="Your password…" autocomplete="current-password" />
         </div>
+        <div class="input-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="login-remember" />
+            <span>Remember me for 30 days</span>
+          </label>
+        </div>
         <p class="auth-error" id="login-error"></p>
         <button type="submit" class="btn btn-primary auth-submit">Login →</button>
       </form>
@@ -64,6 +70,12 @@
         <div class="input-group">
           <label for="reg-password">Choose Password</label>
           <input type="password" id="reg-password" placeholder="At least 4 characters…" autocomplete="new-password" />
+        </div>
+        <div class="input-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="reg-remember" />
+            <span>Remember me for 30 days</span>
+          </label>
         </div>
         <p class="auth-error" id="reg-error"></p>
         <button type="submit" class="btn btn-primary auth-submit">Create Account →</button>
@@ -92,9 +104,14 @@
         </div>
       </div>
 
-      <button id="btn-find" class="btn btn-primary btn-play">
-        <span class="btn-text">⚔️ Find Opponent</span>
-      </button>
+      <div class="game-mode-selection">
+        <button id="btn-find-pd" class="btn btn-primary btn-play" data-mode="prisoners_dilemma">
+          <span class="btn-text">🤝 Prisoner's Dilemma</span>
+        </button>
+        <button id="btn-find-ult" class="btn btn-primary btn-play" data-mode="ultimatum" style="display: none">
+          <span class="btn-text">💰 Ultimatum Game</span>
+        </button>
+      </div>
 
       <div class="payoff-preview">
         <h3>Prisoner's Dilemma — Payoff Matrix</h3>
@@ -225,6 +242,15 @@
     </div>
   </section>
 
+  <!-- ═══════════════════════ WAITING SCREEN ═════════════════════ -->
+  <section id="screen-waiting" class="screen">
+    <div class="glass-card">
+      <div class="spinner"></div>
+      <h2>Waiting for Opponent…</h2>
+      <p class="hint">The proposer is deciding on the split.</p>
+    </div>
+  </section>
+
   <!-- ═══════════════════════ GAME SCREEN ════════════════════════ -->
   <section id="screen-game" class="screen">
     <div class="game-hud">
@@ -328,6 +354,81 @@
       </div>
 
       <p class="rematch-status" id="rematch-status"></p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ ULTIMATUM: PROPOSER SCREEN ═════════════ -->
+  <section id="screen-ultimatum-proposer" class="screen">
+    <div class="glass-card game-card">
+      <h2>You are the PROPOSER</h2>
+      <p class="subtitle">Divide 10 points. Your opponent can accept or reject.</p>
+
+      <div class="split-display">
+        <div class="split-you">
+          <span class="split-label">You get</span>
+          <span id="proposer-split" class="split-value">5</span>
+        </div>
+        <div class="split-them">
+          <span class="split-label">They get</span>
+          <span id="responder-split" class="split-value">5</span>
+        </div>
+      </div>
+
+      <input type="range" id="split-slider" min="0" max="10" value="5" class="split-slider" />
+
+      <p class="warning-text">⚠️ If rejected, both get 0</p>
+
+      <button id="btn-propose" class="btn btn-primary btn-play">Propose Split →</button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ ULTIMATUM: RESPONDER SCREEN ════════════ -->
+  <section id="screen-ultimatum-responder" class="screen">
+    <div class="glass-card game-card">
+      <h2>Opponent's Proposal</h2>
+
+      <div class="proposal-display">
+        <div class="proposal-item">
+          <span class="proposal-label">They keep</span>
+          <span id="resp-proposer-split" class="proposal-value">7</span>
+        </div>
+        <div class="proposal-item">
+          <span class="proposal-label">You get</span>
+          <span id="resp-responder-split" class="proposal-value">3</span>
+        </div>
+      </div>
+
+      <p class="subtitle">Will you accept this split?</p>
+
+      <div class="choice-buttons">
+        <button id="btn-accept" class="btn btn-cooperate">✓ Accept</button>
+        <button id="btn-reject" class="btn btn-defect">✗ Reject</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ ULTIMATUM: ROUND RESULT ════════════════ -->
+  <section id="screen-ultimatum-result" class="screen">
+    <div class="glass-card game-card">
+      <h2 id="ult-result-title">ACCEPTED!</h2>
+
+      <div class="result-split">
+        <div class="result-item">
+          <span class="result-label">You</span>
+          <span id="ult-my-points" class="result-value">5</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Opponent</span>
+          <span id="ult-opp-points" class="result-value">5</span>
+        </div>
+      </div>
+
+      <div class="score-display">
+        <div>Your Score: <span id="ult-my-score">5</span></div>
+        <div>Opponent Score: <span id="ult-opp-score">5</span></div>
+      </div>
+
+      <p id="ult-next-msg" class="subtitle">Waiting for next round...</p>
     </div>
   </section>
 

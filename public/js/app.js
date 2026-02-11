@@ -19,6 +19,10 @@
         searching: $('#screen-searching'),
         game: $('#screen-game'),
         results: $('#screen-results'),
+        'ultimatum-proposer': $('#screen-ultimatum-proposer'),
+        'ultimatum-responder': $('#screen-ultimatum-responder'),
+        'ultimatum-result': $('#screen-ultimatum-result'),
+        waiting: $('#screen-waiting'),
     };
 
     const dom = {
@@ -39,7 +43,8 @@
         homeWins: $('#home-wins'),
         homeLosses: $('#home-losses'),
         homeDraws: $('#home-draws'),
-        btnFind: $('#btn-find'),
+        btnFindPD: $('#btn-find-pd'),
+        btnFindUlt: $('#btn-find-ult'),
 
         // Profile
         profileAvatar: $('#profile-avatar'),
@@ -155,6 +160,7 @@
                 body: JSON.stringify({
                     username: dom.loginUser.value.trim(),
                     password: dom.loginPass.value,
+                    rememberMe: $('#login-remember').checked,
                 }),
             });
             const data = await res.json();
@@ -178,6 +184,7 @@
                 body: JSON.stringify({
                     username: dom.regUser.value.trim(),
                     password: dom.regPass.value,
+                    rememberMe: $('#reg-remember').checked,
                 }),
             });
             const data = await res.json();
@@ -465,10 +472,89 @@
     // MATCHMAKING
     // ══════════════════════════════════════════════════════════════════
 
-    dom.btnFind.addEventListener('click', () => {
+    // Game mode selection buttons
+    dom.btnFindPD?.addEventListener('click', () => {
         if (!currentUser) return;
-        socket.emit('join-queue');
+        console.log('[DEBUG] Joining Prisoner\'s Dilemma queue');
+        socket.emit('join-queue', 'prisoners_dilemma');
         showScreen('searching');
+    });
+
+    dom.btnFindUlt?.addEventListener('click', () => {
+        if (!currentUser) return;
+        console.log('[DEBUG] Joining Ultimatum queue');
+        socket.emit('join-queue', 'ultimatum');
+        showScreen('searching');
+    });
+
+    // ══════════════════════════════════════════════════════════════════
+    // ULTIMATUM GAME
+    // ══════════════════════════════════════════════════════════════════
+
+    // Split slider interaction
+    const splitSlider = $('#split-slider');
+    const proposerSplitDisplay = $('#proposer-split');
+    const responderSplitDisplay = $('#responder-split');
+
+    splitSlider?.addEventListener('input', () => {
+        const value = parseInt(splitSlider.value);
+        proposerSplitDisplay.textContent = value;
+        responderSplitDisplay.textContent = 10 - value;
+    });
+
+    // Propose split button
+    $('#btn-propose')?.addEventListener('click', () => {
+        const split = parseInt(splitSlider.value);
+        socket.emit('propose-split', split);
+    });
+
+    // Proposal submitted confirmation
+    socket.on('proposal-submitted', () => {
+        showScreen('waiting');
+    });
+
+    // Accept/Reject buttons
+    $('#btn-accept')?.addEventListener('click', () => {
+        socket.emit('respond-to-proposal', true);
+    });
+
+    $('#btn-reject')?.addEventListener('click', () => {
+        socket.emit('respond-to-proposal', false);
+    });
+
+    // Receive proposal (responder)
+    socket.on('proposal-received', (data) => {
+        $('#resp-proposer-split').textContent = data.proposerSplit;
+        $('#resp-responder-split').textContent = data.responderSplit;
+        showScreen('ultimatum-responder');
+    });
+
+    // Ultimatum round result
+    socket.on('ultimatum-round-result', (data) => {
+        const title = $('#ult-result-title');
+        title.textContent = data.accepted ? 'ACCEPTED! ✓' : 'REJECTED! ✗';
+        title.style.color = data.accepted ? 'var(--cooperate)' : 'var(--defect)';
+
+        $('#ult-my-points').textContent = data.myPoints;
+        $('#ult-opp-points').textContent = data.opponentPoints;
+        $('#ult-my-score').textContent = data.myScore;
+        $('#ult-opp-score').textContent = data.opponentScore;
+
+        showScreen('ultimatum-result');
+    });
+
+    // Next round in Ultimatum game
+    socket.on('ultimatum-next-round', (data) => {
+        if (data.role === 'proposer') {
+            // Reset slider to middle
+            if (splitSlider) splitSlider.value = 5;
+            if (proposerSplitDisplay) proposerSplitDisplay.textContent = '5';
+            if (responderSplitDisplay) responderSplitDisplay.textContent = '5';
+            showScreen('ultimatum-proposer');
+        } else {
+            // Responder waits for proposal
+            showScreen('waiting');
+        }
     });
 
     socket.on('queue-joined', () => showScreen('searching'));
@@ -488,13 +574,27 @@
         totalRounds = data.totalRounds;
         currentRound = data.round;
 
-        resetGameUI();
-        dom.youLabel.textContent = currentUser ? currentUser.username : 'You';
-        dom.oppLabel.textContent = opponentName;
-        dom.roundTotal.textContent = totalRounds;
-        dom.roundNum.textContent = currentRound;
-
-        showScreen('game');
+        if (data.gameMode === 'ultimatum') {
+            // Ultimatum Game - show appropriate screen based on role
+            if (data.role === 'proposer') {
+                // Reset slider to default
+                if (splitSlider) splitSlider.value = 5;
+                if (proposerSplitDisplay) proposerSplitDisplay.textContent = '5';
+                if (responderSplitDisplay) responderSplitDisplay.textContent = '5';
+                showScreen('ultimatum-proposer');
+            } else {
+                // Responder waits for proposal
+                showScreen('waiting');
+            }
+        } else {
+            // Prisoner's Dilemma - existing logic
+            resetGameUI();
+            dom.youLabel.textContent = currentUser ? currentUser.username : 'You';
+            dom.oppLabel.textContent = opponentName;
+            dom.roundTotal.textContent = totalRounds;
+            dom.roundNum.textContent = currentRound;
+            showScreen('game');
+        }
     });
 
     // ══════════════════════════════════════════════════════════════════
